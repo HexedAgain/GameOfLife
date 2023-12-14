@@ -20,4 +20,10 @@ class Cells(
         _grid[x][y] = alive
         return true
     }
+
+    companion object {
+        fun makeGrid(rows: Int, columns: Int): Cells {
+            return Cells((0 until rows * columns).map { false }.chunked(rows))
+        }
+    }
 }
