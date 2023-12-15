@@ -38,7 +38,7 @@ class Cells(
         val newGrid: MutableList<MutableList<Boolean>> = mutableListOf()
         for (i in _grid.indices) {
             newGrid.add(mutableListOf())
-            for (j in _grid.indices) {
+            for (j in _grid[i].indices) {
                 when (getNoOfLiveNeighbours(i, j)) {
                     0, 1 -> newGrid[i].add(false) // starvation
                     2 -> newGrid[i].add(_grid[i][j]) // if alive it stays alive
@@ -59,7 +59,7 @@ class Cells(
 
     companion object {
         fun makeGrid(rows: Int, columns: Int): Cells {
-            return Cells((0 until rows * columns).map { false }.chunked(rows))
+            return Cells((0 until rows * columns).map { false }.chunked(columns))
         }
     }
 }

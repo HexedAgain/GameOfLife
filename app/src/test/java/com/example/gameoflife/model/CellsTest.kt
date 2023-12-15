@@ -33,7 +33,7 @@ class CellsTest: FreeSpec() {
             "given M rows and N columns it creates an M x N grid with all cells initialised false" {
                 cells = Cells.makeGrid(rows = 3, columns = 2)
 
-                cells.get().map { it.size } shouldBe listOf(3, 3)
+                cells.get().map { it.size } shouldBe listOf(2, 2, 2)
                 cells.get().flatten().any { it } shouldBe false
             }
         }
@@ -410,6 +410,63 @@ class CellsTest: FreeSpec() {
                     "all dead cells with 4 neighbours remain dead" {
                         cellsUnderTest.get()[1][1] shouldBe false
                     }
+                }
+            }
+            "it respects known starting configurations" - {
+                "block" {
+                    cells = Cells.makeGrid(2, 2)
+                    listOf(Pair(0,0), Pair(0,1), Pair(1, 0), Pair(1, 1)).map { cells.makeCellLive(it.first, it.second) }
+
+                    val cellsUnderTest = cells.getNextGeneration()
+
+                    cellsUnderTest.get().flatten() shouldBe cells.get().flatten()
+                }
+                "blinker" {
+                    cells = Cells.makeGrid(3, 3)
+                    listOf(Pair(1,0), Pair(1,1), Pair(1, 2)).map { cells.makeCellLive(it.first, it.second) }
+
+                    val secondGeneration = cells.getNextGeneration()
+                    val thirdGeneration = secondGeneration.getNextGeneration()
+
+                    secondGeneration.get()[0] shouldBe listOf(false, true, false)
+                    secondGeneration.get()[1] shouldBe listOf(false, true, false)
+                    secondGeneration.get()[2] shouldBe listOf(false, true, false)
+                    thirdGeneration.get().flatten() shouldBe cells.get().flatten()
+                }
+                "glider" {
+                    /*
+                     * X X 0 X X    X X X X X    X X X X X    X X X X X    X X X X X
+                     * X X X 0 X -> X 0 X 0 X -> X X X 0 X -> X X 0 X X -> X X X 0 X
+                     * X 0 0 0 X    X X 0 0 X    X 0 X 0 X    X X X 0 0    X X X X 0
+                     * X X X X X    X X 0 X X    X X 0 0 X    X X 0 0 X    X X 0 0 0
+                     */
+                    cells = Cells.makeGrid(4, 5)
+                    listOf(Pair(0,2), Pair(1,3), Pair(2, 1), Pair(2, 2), Pair(2, 3)).map { cells.makeCellLive(it.first, it.second) }
+
+                    val secondGeneration = cells.getNextGeneration()
+                    val thirdGeneration = secondGeneration.getNextGeneration()
+                    val fourthGeneration = thirdGeneration.getNextGeneration()
+                    val fifthGeneration = fourthGeneration.getNextGeneration()
+
+                    secondGeneration.get()[0] shouldBe listOf(false, false, false, false, false)
+                    secondGeneration.get()[1] shouldBe listOf(false, true, false, true, false)
+                    secondGeneration.get()[2] shouldBe listOf(false, false, true, true, false)
+                    secondGeneration.get()[3] shouldBe listOf(false, false, true, false, false)
+
+                    thirdGeneration.get()[0] shouldBe listOf(false, false, false, false, false)
+                    thirdGeneration.get()[1] shouldBe listOf(false, false, false, true, false)
+                    thirdGeneration.get()[2] shouldBe listOf(false, true, false, true, false)
+                    thirdGeneration.get()[3] shouldBe listOf(false, false, true, true, false)
+
+                    fourthGeneration.get()[0] shouldBe listOf(false, false, false, false, false)
+                    fourthGeneration.get()[1] shouldBe listOf(false, false, true, false, false)
+                    fourthGeneration.get()[2] shouldBe listOf(false, false, false, true, true)
+                    fourthGeneration.get()[3] shouldBe listOf(false, false, true, true, false)
+
+                    fifthGeneration.get()[0] shouldBe listOf(false, false, false, false, false)
+                    fifthGeneration.get()[1] shouldBe listOf(false, false, false, true, false)
+                    fifthGeneration.get()[2] shouldBe listOf(false, false, false, false, true)
+                    fifthGeneration.get()[3] shouldBe listOf(false, false, true, true, true)
                 }
             }
         }
