@@ -12,8 +12,8 @@ class CellsTest: FreeSpec() {
 
     fun testGrid(cells: Cells, action: (Cells, Int, Int) -> Unit) {
         (0 until cells.totalCells).forEach { idx ->
-            val row = idx / 3;
-            val column = idx % 3;
+            val row = idx / 3
+            val column = idx % 3
             try {
                 action(cells, row, column)
             } catch (ex: AssertionFailedError) {
@@ -344,37 +344,74 @@ class CellsTest: FreeSpec() {
                 // That's enough. If I break something I'd be surprised if one of these doesn't fail (and the 4 case is massive)
             }
         }
-        "nextGeneration" - {
-            "if the current grid is N x M, the next grid is also N x M" {
-                true shouldBe false
-            }
-            "any live cells with zero neighbours become dead" {
-                cells = Cells.makeGrid(3, 3)
-                cells.makeCellLive(0, 0)
+        "getNextGeneration" - {
+            "it returns a new grid, where each cell lives or dies according to game of life rules" - {
+                "if the grid contains a single live cell then all cells become dead" {
+                    cells = Cells.makeGrid(3, 3)
+                    cells.makeCellLive(0, 0)
 
-                cells.nextGeneration()
+                    val cellsUnderTest = cells.getNextGeneration()
 
-                cells.get().flatten().any { it } shouldBe false
+                    cellsUnderTest.get() shouldBe listOf(listOf(false, false, false), listOf(false, false, false), listOf(false, false, false))
+                }
+                "if the grid contains two live cells then all cells also become dead (no live cells have 2 or 3 neighbours)" {
+                    cells = Cells.makeGrid(3, 3)
+                    cells.makeCellLive(0, 0)
+                    cells.makeCellLive(0, 1)
+
+                    val cellsUnderTest = cells.getNextGeneration()
+
+                    cellsUnderTest.get() shouldBe listOf(listOf(false, false, false), listOf(false, false, false), listOf(false, false, false))
+                }
+                "if the grid contains three live cells then ..." - {
+                    cells = Cells.makeGrid(3, 3)
+                    listOf(Pair(0,0), Pair(0,2), Pair(1, 1)).map { cells.makeCellLive(it.first, it.second) }
+                    /*
+                     *   0 X 0      X 0 X
+                     *   X 0 X  ->  X 0 X
+                     *   X X X      X X X
+                     */
+
+                    val cellsUnderTest = cells.getNextGeneration()
+
+                    "all live cells that had 1 or 0 neighbours die" {
+                        cellsUnderTest.get()[0][0] shouldBe false
+                        cellsUnderTest.get()[0][2] shouldBe false
+                    }
+                    "all live cells with 2 neighbours remain alive" {
+                        cellsUnderTest.get()[1][1] shouldBe true
+                    }
+                    "all dead cells with 3 neighbours become alive" {
+                        cellsUnderTest.get()[0][1] shouldBe true
+                    }
+                }
+                "if the grid contains four live cells then ..." - {
+                    cells = Cells.makeGrid(3, 3)
+                    listOf(Pair(0,0), Pair(0,2), Pair(1, 0), Pair(2, 1)).map { cells.makeCellLive(it.first, it.second) }
+                    /*
+                     *   0 X 0      X 0 X
+                     *   0 X X  ->  0 X X
+                     *   X O X      X X X
+                     */
+
+                    val cellsUnderTest = cells.getNextGeneration()
+
+                    "all live cells that had 1 or 0 neighbours die" {
+                        cellsUnderTest.get()[0][0] shouldBe false
+                        cellsUnderTest.get()[0][2] shouldBe false
+                        cellsUnderTest.get()[2][1] shouldBe false
+                    }
+                    "all live cells with 2 neighbours remain alive" {
+                        cellsUnderTest.get()[1][0] shouldBe true
+                    }
+                    "all dead cells with 3 neighbours become alive" {
+                        cellsUnderTest.get()[0][1] shouldBe true
+                    }
+                    "all dead cells with 4 neighbours remain dead" {
+                        cellsUnderTest.get()[1][1] shouldBe false
+                    }
+                }
             }
         }
-//        "getCellLiveness" - {
-//            "if a cell has zero or one live neighbours the cell dies of starvation" - {
-//                "zero neighbours" - {
-//                    "cell on corner" {
-//                        setup(rows = 2, columns = 2)
-//                        true shouldBe false
-//                    }
-//                    "cell on edge" {
-//                        true shouldBe false
-//                    }
-//                    "cell inside" {
-//                        true shouldBe false
-//                    }
-//                }
-//                "one neighbour" {
-//                    true shouldBe false
-//                }
-//            }
-//        }
     }
 }

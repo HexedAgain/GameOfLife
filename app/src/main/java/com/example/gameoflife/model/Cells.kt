@@ -1,7 +1,7 @@
 package com.example.gameoflife.model
 
 class Cells(
-    private val grid: List<List<Boolean>>
+    grid: List<List<Boolean>>
 ) {
     private var _grid: MutableList<MutableList<Boolean>> = grid.map { it.toMutableList() }.toMutableList()
     fun get(): List<List<Boolean>> = _grid
@@ -34,23 +34,24 @@ class Cells(
         return sum
     }
 
-    fun nextGeneration() {
+    fun getNextGeneration(): Cells {
         val newGrid: MutableList<MutableList<Boolean>> = mutableListOf()
-        for (i in grid.indices) {
+        for (i in _grid.indices) {
             newGrid.add(mutableListOf())
-            for (j in grid.indices) {
+            for (j in _grid.indices) {
                 when (getNoOfLiveNeighbours(i, j)) {
-                    0, 1 -> newGrid[i].add(false)
-                    2, 3 -> newGrid[i].add(true)
-                    else -> newGrid[i].add(false)
+                    0, 1 -> newGrid[i].add(false) // starvation
+                    2 -> newGrid[i].add(_grid[i][j]) // if alive it stays alive
+                    3 -> newGrid[i].add(true) // if dead there is reproduction, if alive it stays alive
+                    else -> newGrid[i].add(false) // overpopulation
                 }
             }
         }
-        _grid = newGrid
+        return Cells(newGrid)
     }
 
     private fun setLiveness(x: Int, y: Int, alive: Boolean): Boolean {
-        if (x >= grid.first().size || y >= grid.size) return false
+        if (x >= _grid.first().size || y >= _grid.size) return false
 
         _grid[x][y] = alive
         return true
