@@ -9,6 +9,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class MainScreenViewModel(
@@ -31,10 +32,9 @@ class MainScreenViewModel(
     private var gameJob: Job? = null
 
     fun updateCell(row: Int, column: Int) {
-        _cells.value = cells.value.toggleLiveness(row, column)
+        _cells.update { it.toggleLiveness(row, column) }
     }
 
-    // stepsRemaining should decrement every stepDurationMs milliseconds
     fun startGameOfLife(noOfGenerations: Int) {
         _stepsRemaining.value = noOfGenerations
         gameJob = viewModelScope.launch(defaultDispatcher) {
@@ -51,12 +51,10 @@ class MainScreenViewModel(
         gameJob?.cancel()
     }
 
-    // a new coroutine scope should be launched to decrement the counter
     fun continueGameOfLife() {
        startGameOfLife(stepsRemaining.value)
     }
 
-    // stepsRemaining should be set to 0
     fun stopGameOfLife() {
         _stepsRemaining.value = 0
         gameJob?.cancel()
