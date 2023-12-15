@@ -1,4 +1,4 @@
-package com.example.gameoflife
+package com.example.gameoflife.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,6 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gameoflife.ui.theme.GameOfLifeTheme
+import com.example.gameoflife.viewmodel.MainScreenViewModel
+import org.koin.androidx.compose.koinViewModel
 
 class MainActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,11 +24,16 @@ class MainActivity: ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    GameOfLifeContent()
                 }
             }
         }
     }
+}
+
+@Composable
+fun GameOfLifeContent(mainScreenViewModel: MainScreenViewModel = koinViewModel()) {
+    Greeting("Android")
 }
 
 @Composable

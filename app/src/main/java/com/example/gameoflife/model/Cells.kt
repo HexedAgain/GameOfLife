@@ -8,11 +8,11 @@ class Cells(
 
     val totalCells: Int = get().flatten().size
 
-    fun makeCellLive(row: Int, column: Int): Boolean {
+    fun makeCellLive(row: Int, column: Int): Cells {
         return setLiveness(row, column, alive = true)
     }
 
-    fun makeCellDead(row: Int, column: Int): Boolean {
+    fun makeCellDead(row: Int, column: Int): Cells {
         return setLiveness(row, column, alive = false)
     }
 
@@ -50,15 +50,20 @@ class Cells(
         return Cells(newGrid)
     }
 
-    private fun setLiveness(x: Int, y: Int, alive: Boolean): Boolean {
-        if (x >= _grid.first().size || y >= _grid.size) return false
+    fun toggleLiveness(x: Int, y: Int): Cells {
+        return setLiveness(x, y, !_grid[x][y])
+    }
+
+    private fun setLiveness(x: Int, y: Int, alive: Boolean): Cells {
+        if (x >= _grid.first().size || y >= _grid.size) return this
 
         _grid[x][y] = alive
-        return true
+        return Cells(_grid)
     }
 
     companion object {
         fun makeGrid(rows: Int, columns: Int): Cells {
+            if (rows == 0 || columns == 0) return Cells(listOf())
             return Cells((0 until rows * columns).map { false }.chunked(columns))
         }
     }

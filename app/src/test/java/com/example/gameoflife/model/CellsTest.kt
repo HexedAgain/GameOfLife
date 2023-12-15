@@ -38,61 +38,72 @@ class CellsTest: FreeSpec() {
             }
         }
         "makeCellLive" - {
-            "if there exists a slot at the position then this cell is made live and the function returns true" {
+            "if there exists a slot at the position then it returns a new Cells where this particular cell is alive" {
                 setup(rows = 1, columns = 1)
 
-                val isSuccess = cells.makeCellLive(0,0)
+                val cellsUnderTest = cells.makeCellLive(0,0)
 
-                isSuccess shouldBe true
-                cells.get().flatten().first() shouldBe true
+                cellsUnderTest.get().flatten().first() shouldBe true
             }
-            "otherwise it does not change any cells and returns false" - {
+            "otherwise it does not change any cells" - {
                 "x out of bounds" {
                     setup(rows = 1, columns = 1)
 
-                    val isSuccess = cells.makeCellLive(1, 0)
+                    val cellsUnderTest = cells.makeCellLive(1, 0)
 
-                    isSuccess shouldBe false
-                    cells.get().flatten().first() shouldBe false
+                    cellsUnderTest.get().flatten().first() shouldBe false
                 }
                 "y out of bounds" {
                     setup(rows = 1, columns = 1)
 
-                    val isSuccess = cells.makeCellLive(0, 1)
+                    val cellsUnderTest = cells.makeCellLive(0, 1)
 
-                    isSuccess shouldBe false
-                    cells.get().flatten().first() shouldBe false
+                    cellsUnderTest.get().flatten().first() shouldBe false
                 }
             }
         }
         "makeCellDead" - {
-            "if there exists a slot at the position then this cell is made dead and the function returns true" {
+            "if there exists a slot at the position then it returns a new Cells where this particular cell is dead" {
                 setup(rows = 1, columns = 1)
 
-                val isSuccess = cells.makeCellDead(0,0)
+                val cellsUnderTest = cells.makeCellDead(0,0)
 
-                isSuccess shouldBe true
-                cells.get().flatten().first() shouldBe false
+                cellsUnderTest.get().flatten().first() shouldBe false
             }
             "otherwise it does not change any cells and returns false" - {
                 "x out of bounds" {
                     setup(rows = 1, columns = 1)
-                    cells.makeCellLive(0, 0)
+                    cells = cells.makeCellLive(0, 0)
 
-                    val isSuccess = cells.makeCellDead(1, 0)
+                    val cellsUnderTest = cells.makeCellDead(1, 0)
 
-                    isSuccess shouldBe false
-                    cells.get().flatten().first() shouldBe true
+                    cellsUnderTest.get().flatten().first() shouldBe true
                 }
                 "y out of bounds" {
                     setup(rows = 1, columns = 1)
-                    cells.makeCellLive(0, 0)
+                    cells = cells.makeCellLive(0, 0)
 
-                    val isSuccess = cells.makeCellDead(0, 1)
+                    val cellsUnderTest = cells.makeCellDead(0, 1)
 
-                    isSuccess shouldBe false
-                    cells.get().flatten().first() shouldBe true
+                    cellsUnderTest.get().flatten().first() shouldBe true
                 }
+            }
+        }
+        "toggleLiveness" - {
+            "if the cell at [row][column] is dead it becomes alive" {
+                cells = Cells.makeGrid(1, 1)
+
+                val cellsUnderTest = cells.toggleLiveness(0, 0)
+
+                cellsUnderTest.get()[0][0] shouldBe true
+            }
+            "otherwise it becomes dead" {
+                cells = Cells.makeGrid(1, 1)
+                cells = cells.toggleLiveness(0, 0)
+
+                val cellsUnderTest = cells.toggleLiveness(0, 0)
+
+                cellsUnderTest.get()[0][0] shouldBe false
             }
         }
         "getNoOfLiveNeighbours" - {
