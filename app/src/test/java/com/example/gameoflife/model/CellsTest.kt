@@ -104,7 +104,7 @@ class CellsTest: FreeSpec() {
                         cells.getNoOfLiveNeighbours(row, column) shouldBe 0
                     }
                 }
-                // Note can exploit rotational symmetry to exhaustively test these ...
+                // Note can exploit rotational or reflectional symmetry to exhaustively test these ...
                 "1 live" - {
                     "live at corner" {
                         cells = Cells.makeGrid(3, 3)
@@ -161,7 +161,7 @@ class CellsTest: FreeSpec() {
                             cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
                         }
                     }
-                    "[O.0][...][...]" {
+                    "[O.O][...][...]" {
                         cells = Cells.makeGrid(3, 3)
                         cells.makeCellLive(0, 0)
                         cells.makeCellLive(0, 2)
@@ -175,7 +175,7 @@ class CellsTest: FreeSpec() {
                             cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
                         }
                     }
-                    "[0..][.0.][...]" {
+                    "[O..][.O.][...]" {
                         cells = Cells.makeGrid(3, 3)
                         cells.makeCellLive(0, 0)
                         cells.makeCellLive(1, 1)
@@ -189,7 +189,7 @@ class CellsTest: FreeSpec() {
                             cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
                         }
                     }
-                    "[0..][..0][...]" {
+                    "[O..][..O][...]" {
                         cells = Cells.makeGrid(3, 3)
                         cells.makeCellLive(0, 0)
                         cells.makeCellLive(1, 2)
@@ -203,11 +203,217 @@ class CellsTest: FreeSpec() {
                             cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
                         }
                     }
-                    "[0..][...][.0.]" {
-                        true shouldBe false
+                    "[O..][...][.O.]" {
+                        cells = Cells.makeGrid(3, 3)
+                        cells.makeCellLive(0, 0)
+                        cells.makeCellLive(2, 1)
+
+                        val expected = listOf(
+                            0,1,0,
+                            2,2,1,
+                            1,0,1).chunked(3)
+
+                        testGrid(cells) { cells, row, column ->
+                            cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
+                        }
                     }
-                    "[0..][...][..0]" {
-                        true shouldBe false
+                    "[O..][...][..O]" {
+                        cells = Cells.makeGrid(3, 3)
+                        cells.makeCellLive(0, 0)
+                        cells.makeCellLive(2, 2)
+
+                        val expected = listOf(
+                            0,1,0,
+                            1,2,1,
+                            0,1,0).chunked(3)
+
+                        testGrid(cells) { cells, row, column ->
+                            cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
+                        }
+                    }
+                }
+                "3 live" - {
+                    "[OOO][...][...]" {
+                        cells = Cells.makeGrid(3, 3)
+                        listOf(Pair(0, 0), Pair(0, 1), Pair(0, 2)).forEach { cells.makeCellLive(it.first, it.second) }
+
+                        val expected = listOf(
+                            1,2,1,
+                            2,3,2,
+                            0,0,0).chunked(3)
+
+                        testGrid(cells) { cells, row, column ->
+                            cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
+                        }
+                    }
+                    "[OO.][O..][...]" {
+                        cells = Cells.makeGrid(3, 3)
+                        listOf(Pair(0, 0), Pair(0, 1), Pair(1, 0)).forEach { cells.makeCellLive(it.first, it.second) }
+
+                        val expected = listOf(
+                            2,2,1,
+                            2,3,1,
+                            1,1,0).chunked(3)
+
+                        testGrid(cells) { cells, row, column ->
+                            cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
+                        }
+                    }
+                    "[OO.][.O.][...]" {
+                        cells = Cells.makeGrid(3, 3)
+                        listOf(Pair(0, 0), Pair(0, 1), Pair(1, 1)).forEach { cells.makeCellLive(it.first, it.second) }
+
+                        val expected = listOf(
+                            2,2,2,
+                            3,2,2,
+                            1,1,1).chunked(3)
+
+                        testGrid(cells) { cells, row, column ->
+                            cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
+                        }
+                    }
+                    "[OO.][..O][...]" {
+                        cells = Cells.makeGrid(3, 3)
+                        listOf(Pair(0, 0), Pair(0, 1), Pair(1, 2)).forEach { cells.makeCellLive(it.first, it.second) }
+
+                        val expected = listOf(
+                            1,2,2,
+                            2,3,1,
+                            0,1,1).chunked(3)
+
+                        testGrid(cells) { cells, row, column ->
+                            cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
+                        }
+                    }
+                    "[OO.][...][O..]" {
+                        cells = Cells.makeGrid(3, 3)
+                        listOf(Pair(0, 0), Pair(0, 1), Pair(2, 0)).forEach { cells.makeCellLive(it.first, it.second) }
+
+                        val expected = listOf(
+                            1,1,1,
+                            3,3,1,
+                            0,1,0).chunked(3)
+
+                        testGrid(cells) { cells, row, column ->
+                            cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
+                        }
+                    }
+                    "[OO.][...][.O.]" {
+                        cells = Cells.makeGrid(3, 3)
+                        listOf(Pair(0, 0), Pair(0, 1), Pair(2, 1)).forEach { cells.makeCellLive(it.first, it.second) }
+
+                        val expected = listOf(
+                            1,1,1,
+                            3,3,2,
+                            1,0,1).chunked(3)
+
+                        testGrid(cells) { cells, row, column ->
+                            cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
+                        }
+                    }
+                    "[OO.][...][..O]" {
+                        cells = Cells.makeGrid(3, 3)
+                        listOf(Pair(0, 0), Pair(0, 1), Pair(2, 2)).forEach { cells.makeCellLive(it.first, it.second) }
+
+                        val expected = listOf(
+                            1,1,1,
+                            2,3,2,
+                            0,1,0).chunked(3)
+
+                        testGrid(cells) { cells, row, column ->
+                            cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
+                        }
+                    }
+                    "[O.O][O..][...]" {
+                        cells = Cells.makeGrid(3, 3)
+                        listOf(Pair(0, 0), Pair(0, 2), Pair(1, 0)).forEach { cells.makeCellLive(it.first, it.second) }
+
+                        val expected = listOf(
+                            1,3,0,
+                            1,3,1,
+                            1,1,0).chunked(3)
+
+                        testGrid(cells) { cells, row, column ->
+                            cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
+                        }
+                    }
+                    "[O.O][.O.][...]" {
+                        cells = Cells.makeGrid(3, 3)
+                        listOf(Pair(0, 0), Pair(0, 2), Pair(1, 1)).forEach { cells.makeCellLive(it.first, it.second) }
+
+                        val expected = listOf(
+                            1,3,1,
+                            2,2,2,
+                            1,1,1).chunked(3)
+
+                        testGrid(cells) { cells, row, column ->
+                            cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
+                        }
+                    }
+                    "[O.O][...][O..]" {
+                        cells = Cells.makeGrid(3, 3)
+                        listOf(Pair(0, 0), Pair(0, 2), Pair(2, 0)).forEach { cells.makeCellLive(it.first, it.second) }
+
+                        val expected = listOf(
+                            0,2,0,
+                            2,3,1,
+                            0,1,0).chunked(3)
+
+                        testGrid(cells) { cells, row, column ->
+                            cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
+                        }
+                    }
+                    "[O.O][...][.O.]" {
+                        cells = Cells.makeGrid(3, 3)
+                        listOf(Pair(0, 0), Pair(0, 2), Pair(2, 1)).forEach { cells.makeCellLive(it.first, it.second) }
+
+                        val expected = listOf(
+                            0,2,0,
+                            2,3,2,
+                            1,0,1).chunked(3)
+
+                        testGrid(cells) { cells, row, column ->
+                            cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
+                        }
+                    }
+                    "[O..][.O.][.O.]" {
+                        cells = Cells.makeGrid(3, 3)
+                        listOf(Pair(0, 0), Pair(1, 1), Pair(2, 1)).forEach { cells.makeCellLive(it.first, it.second) }
+
+                        val expected = listOf(
+                            1,2,1,
+                            3,2,2,
+                            2,1,2).chunked(3)
+
+                        testGrid(cells) { cells, row, column ->
+                            cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
+                        }
+                    }
+                    "[O..][.O.][..O]" {
+                        cells = Cells.makeGrid(3, 3)
+                        listOf(Pair(0, 0), Pair(1, 1), Pair(2, 2)).forEach { cells.makeCellLive(it.first, it.second) }
+
+                        val expected = listOf(
+                            1,2,1,
+                            2,2,2,
+                            1,2,1).chunked(3)
+
+                        testGrid(cells) { cells, row, column ->
+                            cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
+                        }
+                    }
+                    "[O..][..O][.O.]" {
+                        cells = Cells.makeGrid(3, 3)
+                        listOf(Pair(0, 0), Pair(1, 2), Pair(2, 1)).forEach { cells.makeCellLive(it.first, it.second) }
+
+                        val expected = listOf(
+                            0,2,1,
+                            2,3,1,
+                            1,1,2).chunked(3)
+
+                        testGrid(cells) { cells, row, column ->
+                            cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
+                        }
                     }
                 }
             }
