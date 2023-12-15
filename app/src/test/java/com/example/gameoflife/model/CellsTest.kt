@@ -110,10 +110,7 @@ class CellsTest: FreeSpec() {
                         cells = Cells.makeGrid(3, 3)
                         cells.makeCellLive(0, 0)
 
-                        val expected = listOf(
-                            0,1,0,
-                            1,1,0,
-                            0,0,0).chunked(3)
+                        val expected = listOf( 0,1,0, 1,1,0, 0,0,0).chunked(3)
 
                         testGrid(cells) { cells, row, column ->
                             cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
@@ -123,10 +120,7 @@ class CellsTest: FreeSpec() {
                         cells = Cells.makeGrid(3, 3)
                         cells.makeCellLive(0, 1)
 
-                        val expected = listOf(
-                            1,0,1,
-                            1,1,1,
-                            0,0,0).chunked(3)
+                        val expected = listOf( 1,0,1, 1,1,1, 0,0,0).chunked(3)
 
                         testGrid(cells) { cells, row, column ->
                             cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
@@ -136,10 +130,7 @@ class CellsTest: FreeSpec() {
                         cells = Cells.makeGrid(3, 3)
                         cells.makeCellLive(1, 1)
 
-                        val expected = listOf(
-                            1,1,1,
-                            1,0,1,
-                            1,1,1).chunked(3)
+                        val expected = listOf( 1,1,1, 1,0,1, 1,1,1).chunked(3)
 
                         testGrid(cells) { cells, row, column ->
                             cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
@@ -149,13 +140,9 @@ class CellsTest: FreeSpec() {
                 "2 live" - {
                     "[OO.][...][...]" {
                         cells = Cells.makeGrid(3, 3)
-                        cells.makeCellLive(0, 0)
-                        cells.makeCellLive(0, 1)
+                        listOf(Pair(0, 0), Pair(0, 1)).forEach { cells.makeCellLive(it.first, it.second) }
 
-                        val expected = listOf(
-                            1,1,1,
-                            2,2,1,
-                            0,0,0).chunked(3)
+                        val expected = listOf( 1,1,1, 2,2,1, 0,0,0).chunked(3)
 
                         testGrid(cells) { cells, row, column ->
                             cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
@@ -163,13 +150,9 @@ class CellsTest: FreeSpec() {
                     }
                     "[O.O][...][...]" {
                         cells = Cells.makeGrid(3, 3)
-                        cells.makeCellLive(0, 0)
-                        cells.makeCellLive(0, 2)
+                        listOf(Pair(0, 0), Pair(0, 2)).forEach { cells.makeCellLive(it.first, it.second) }
 
-                        val expected = listOf(
-                            0,2,0,
-                            1,2,1,
-                            0,0,0).chunked(3)
+                        val expected = listOf( 0,2,0, 1,2,1, 0,0,0).chunked(3)
 
                         testGrid(cells) { cells, row, column ->
                             cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
@@ -177,13 +160,9 @@ class CellsTest: FreeSpec() {
                     }
                     "[O..][.O.][...]" {
                         cells = Cells.makeGrid(3, 3)
-                        cells.makeCellLive(0, 0)
-                        cells.makeCellLive(1, 1)
+                        listOf(Pair(0, 0), Pair(1, 1)).forEach { cells.makeCellLive(it.first, it.second) }
 
-                        val expected = listOf(
-                            1,2,1,
-                            2,1,1,
-                            1,1,1).chunked(3)
+                        val expected = listOf( 1,2,1, 2,1,1, 1,1,1).chunked(3)
 
                         testGrid(cells) { cells, row, column ->
                             cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
@@ -191,13 +170,9 @@ class CellsTest: FreeSpec() {
                     }
                     "[O..][..O][...]" {
                         cells = Cells.makeGrid(3, 3)
-                        cells.makeCellLive(0, 0)
-                        cells.makeCellLive(1, 2)
+                        listOf(Pair(0, 0), Pair(1, 2)).forEach { cells.makeCellLive(it.first, it.second) }
 
-                        val expected = listOf(
-                            0,2,1,
-                            1,2,0,
-                            0,1,1).chunked(3)
+                        val expected = listOf( 0,2,1, 1,2,0, 0,1,1).chunked(3)
 
                         testGrid(cells) { cells, row, column ->
                             cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
@@ -205,13 +180,9 @@ class CellsTest: FreeSpec() {
                     }
                     "[O..][...][.O.]" {
                         cells = Cells.makeGrid(3, 3)
-                        cells.makeCellLive(0, 0)
-                        cells.makeCellLive(2, 1)
+                        listOf(Pair(0, 0), Pair(2, 1)).forEach { cells.makeCellLive(it.first, it.second) }
 
-                        val expected = listOf(
-                            0,1,0,
-                            2,2,1,
-                            1,0,1).chunked(3)
+                        val expected = listOf( 0,1,0, 2,2,1, 1,0,1).chunked(3)
 
                         testGrid(cells) { cells, row, column ->
                             cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
@@ -219,13 +190,9 @@ class CellsTest: FreeSpec() {
                     }
                     "[O..][...][..O]" {
                         cells = Cells.makeGrid(3, 3)
-                        cells.makeCellLive(0, 0)
-                        cells.makeCellLive(2, 2)
+                        listOf(Pair(0, 0), Pair(2, 2)).forEach { cells.makeCellLive(it.first, it.second) }
 
-                        val expected = listOf(
-                            0,1,0,
-                            1,2,1,
-                            0,1,0).chunked(3)
+                        val expected = listOf( 0,1,0, 1,2,1, 0,1,0).chunked(3)
 
                         testGrid(cells) { cells, row, column ->
                             cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
@@ -237,10 +204,7 @@ class CellsTest: FreeSpec() {
                         cells = Cells.makeGrid(3, 3)
                         listOf(Pair(0, 0), Pair(0, 1), Pair(0, 2)).forEach { cells.makeCellLive(it.first, it.second) }
 
-                        val expected = listOf(
-                            1,2,1,
-                            2,3,2,
-                            0,0,0).chunked(3)
+                        val expected = listOf( 1,2,1, 2,3,2, 0,0,0).chunked(3)
 
                         testGrid(cells) { cells, row, column ->
                             cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
@@ -250,10 +214,7 @@ class CellsTest: FreeSpec() {
                         cells = Cells.makeGrid(3, 3)
                         listOf(Pair(0, 0), Pair(0, 1), Pair(1, 0)).forEach { cells.makeCellLive(it.first, it.second) }
 
-                        val expected = listOf(
-                            2,2,1,
-                            2,3,1,
-                            1,1,0).chunked(3)
+                        val expected = listOf( 2,2,1, 2,3,1, 1,1,0).chunked(3)
 
                         testGrid(cells) { cells, row, column ->
                             cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
@@ -263,10 +224,7 @@ class CellsTest: FreeSpec() {
                         cells = Cells.makeGrid(3, 3)
                         listOf(Pair(0, 0), Pair(0, 1), Pair(1, 1)).forEach { cells.makeCellLive(it.first, it.second) }
 
-                        val expected = listOf(
-                            2,2,2,
-                            3,2,2,
-                            1,1,1).chunked(3)
+                        val expected = listOf( 2,2,2, 3,2,2, 1,1,1).chunked(3)
 
                         testGrid(cells) { cells, row, column ->
                             cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
@@ -276,10 +234,7 @@ class CellsTest: FreeSpec() {
                         cells = Cells.makeGrid(3, 3)
                         listOf(Pair(0, 0), Pair(0, 1), Pair(1, 2)).forEach { cells.makeCellLive(it.first, it.second) }
 
-                        val expected = listOf(
-                            1,2,2,
-                            2,3,1,
-                            0,1,1).chunked(3)
+                        val expected = listOf( 1,2,2, 2,3,1, 0,1,1).chunked(3)
 
                         testGrid(cells) { cells, row, column ->
                             cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
@@ -289,10 +244,7 @@ class CellsTest: FreeSpec() {
                         cells = Cells.makeGrid(3, 3)
                         listOf(Pair(0, 0), Pair(0, 1), Pair(2, 0)).forEach { cells.makeCellLive(it.first, it.second) }
 
-                        val expected = listOf(
-                            1,1,1,
-                            3,3,1,
-                            0,1,0).chunked(3)
+                        val expected = listOf( 1,1,1, 3,3,1, 0,1,0).chunked(3)
 
                         testGrid(cells) { cells, row, column ->
                             cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
@@ -302,10 +254,7 @@ class CellsTest: FreeSpec() {
                         cells = Cells.makeGrid(3, 3)
                         listOf(Pair(0, 0), Pair(0, 1), Pair(2, 1)).forEach { cells.makeCellLive(it.first, it.second) }
 
-                        val expected = listOf(
-                            1,1,1,
-                            3,3,2,
-                            1,0,1).chunked(3)
+                        val expected = listOf( 1,1,1, 3,3,2, 1,0,1).chunked(3)
 
                         testGrid(cells) { cells, row, column ->
                             cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
@@ -315,10 +264,7 @@ class CellsTest: FreeSpec() {
                         cells = Cells.makeGrid(3, 3)
                         listOf(Pair(0, 0), Pair(0, 1), Pair(2, 2)).forEach { cells.makeCellLive(it.first, it.second) }
 
-                        val expected = listOf(
-                            1,1,1,
-                            2,3,2,
-                            0,1,0).chunked(3)
+                        val expected = listOf( 1,1,1, 2,3,2, 0,1,0).chunked(3)
 
                         testGrid(cells) { cells, row, column ->
                             cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
@@ -328,10 +274,7 @@ class CellsTest: FreeSpec() {
                         cells = Cells.makeGrid(3, 3)
                         listOf(Pair(0, 0), Pair(0, 2), Pair(1, 0)).forEach { cells.makeCellLive(it.first, it.second) }
 
-                        val expected = listOf(
-                            1,3,0,
-                            1,3,1,
-                            1,1,0).chunked(3)
+                        val expected = listOf( 1,3,0, 1,3,1, 1,1,0).chunked(3)
 
                         testGrid(cells) { cells, row, column ->
                             cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
@@ -341,10 +284,7 @@ class CellsTest: FreeSpec() {
                         cells = Cells.makeGrid(3, 3)
                         listOf(Pair(0, 0), Pair(0, 2), Pair(1, 1)).forEach { cells.makeCellLive(it.first, it.second) }
 
-                        val expected = listOf(
-                            1,3,1,
-                            2,2,2,
-                            1,1,1).chunked(3)
+                        val expected = listOf( 1,3,1, 2,2,2, 1,1,1).chunked(3)
 
                         testGrid(cells) { cells, row, column ->
                             cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
@@ -354,10 +294,7 @@ class CellsTest: FreeSpec() {
                         cells = Cells.makeGrid(3, 3)
                         listOf(Pair(0, 0), Pair(0, 2), Pair(2, 0)).forEach { cells.makeCellLive(it.first, it.second) }
 
-                        val expected = listOf(
-                            0,2,0,
-                            2,3,1,
-                            0,1,0).chunked(3)
+                        val expected = listOf( 0,2,0, 2,3,1, 0,1,0).chunked(3)
 
                         testGrid(cells) { cells, row, column ->
                             cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
@@ -367,10 +304,7 @@ class CellsTest: FreeSpec() {
                         cells = Cells.makeGrid(3, 3)
                         listOf(Pair(0, 0), Pair(0, 2), Pair(2, 1)).forEach { cells.makeCellLive(it.first, it.second) }
 
-                        val expected = listOf(
-                            0,2,0,
-                            2,3,2,
-                            1,0,1).chunked(3)
+                        val expected = listOf( 0,2,0, 2,3,2, 1,0,1).chunked(3)
 
                         testGrid(cells) { cells, row, column ->
                             cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
@@ -380,10 +314,7 @@ class CellsTest: FreeSpec() {
                         cells = Cells.makeGrid(3, 3)
                         listOf(Pair(0, 0), Pair(1, 1), Pair(2, 1)).forEach { cells.makeCellLive(it.first, it.second) }
 
-                        val expected = listOf(
-                            1,2,1,
-                            3,2,2,
-                            2,1,2).chunked(3)
+                        val expected = listOf( 1,2,1, 3,2,2, 2,1,2).chunked(3)
 
                         testGrid(cells) { cells, row, column ->
                             cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
@@ -393,10 +324,7 @@ class CellsTest: FreeSpec() {
                         cells = Cells.makeGrid(3, 3)
                         listOf(Pair(0, 0), Pair(1, 1), Pair(2, 2)).forEach { cells.makeCellLive(it.first, it.second) }
 
-                        val expected = listOf(
-                            1,2,1,
-                            2,2,2,
-                            1,2,1).chunked(3)
+                        val expected = listOf( 1,2,1, 2,2,2, 1,2,1).chunked(3)
 
                         testGrid(cells) { cells, row, column ->
                             cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
@@ -406,17 +334,25 @@ class CellsTest: FreeSpec() {
                         cells = Cells.makeGrid(3, 3)
                         listOf(Pair(0, 0), Pair(1, 2), Pair(2, 1)).forEach { cells.makeCellLive(it.first, it.second) }
 
-                        val expected = listOf(
-                            0,2,1,
-                            2,3,1,
-                            1,1,2).chunked(3)
+                        val expected = listOf( 0,2,1, 2,3,1, 1,1,2).chunked(3)
 
                         testGrid(cells) { cells, row, column ->
                             cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
                         }
                     }
                 }
+                // That's enough. If I break something I'd be surprised if one of these doesn't fail (and the 4 case is massive)
             }
+        }
+        "nextGeneration" - {
+           "any live cells with zero neighbours become dead" - {
+               cells = Cells.makeGrid(3, 3)
+               cells.makeCellLive(0, 0)
+
+               cells.nextGeneration()
+
+               cells.get().flatten().any { it } shouldBe false
+           }
         }
 //        "getCellLiveness" - {
 //            "if a cell has zero or one live neighbours the cell dies of starvation" - {

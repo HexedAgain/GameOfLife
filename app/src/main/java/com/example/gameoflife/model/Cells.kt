@@ -17,17 +17,28 @@ class Cells(
     }
 
     fun getNoOfLiveNeighbours(row: Int, column: Int): Int {
-        // Will attempt to refactor this once sufficiently exhaustive tests in place
+        if (_grid.size == 0) return 0
         var sum = 0
-        for (i in (row - 1)..(row + 1)) {
-            for (j in (column - 1)..(column) + 1) {
-                if (i == row && j == column) continue // don't include target cell liveness in sum
-                if (i >= 0 && i < _grid.size && j >= 0 && j < _grid[i].size) {
-                    if (_grid[i][j]) sum += 1
+        val iLower = Math.max(0, row - 1)
+        val iUpper = Math.min(_grid.size - 1, row + 1)
+        val jLower = Math.max(0, column - 1)
+        val jUpper = Math.min(_grid[0].size - 1, column + 1)
+        for (i in iLower..iUpper) {
+            for (j in jLower..jUpper) {
+                when {
+                    i == row && j == column -> continue
+                    _grid[i][j] -> sum += 1
                 }
             }
         }
         return sum
+    }
+
+    fun nextGeneration() {
+        var newGrid: MutableList<MutableList<Boolean>> = mutableListOf()
+        for (i in 0..grid.size) {
+
+        }
     }
 
     private fun setLiveness(x: Int, y: Int, alive: Boolean): Boolean {
