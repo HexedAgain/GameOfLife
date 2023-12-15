@@ -345,14 +345,17 @@ class CellsTest: FreeSpec() {
             }
         }
         "nextGeneration" - {
-           "any live cells with zero neighbours become dead" - {
-               cells = Cells.makeGrid(3, 3)
-               cells.makeCellLive(0, 0)
+            "if the current grid is N x M, the next grid is also N x M" {
+                true shouldBe false
+            }
+            "any live cells with zero neighbours become dead" {
+                cells = Cells.makeGrid(3, 3)
+                cells.makeCellLive(0, 0)
 
-               cells.nextGeneration()
+                cells.nextGeneration()
 
-               cells.get().flatten().any { it } shouldBe false
-           }
+                cells.get().flatten().any { it } shouldBe false
+            }
         }
 //        "getCellLiveness" - {
 //            "if a cell has zero or one live neighbours the cell dies of starvation" - {
