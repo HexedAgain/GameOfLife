@@ -17,6 +17,7 @@ class Cells(
     }
 
     fun getNoOfLiveNeighbours(row: Int, column: Int): Int {
+        // Will attempt to refactor this once sufficiently exhaustive tests in place
         var sum = 0
         for (i in (row - 1)..(row + 1)) {
             for (j in (column - 1)..(column) + 1) {

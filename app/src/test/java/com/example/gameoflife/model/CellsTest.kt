@@ -146,6 +146,70 @@ class CellsTest: FreeSpec() {
                         }
                     }
                 }
+                "2 live" - {
+                    "[OO.][...][...]" {
+                        cells = Cells.makeGrid(3, 3)
+                        cells.makeCellLive(0, 0)
+                        cells.makeCellLive(0, 1)
+
+                        val expected = listOf(
+                            1,1,1,
+                            2,2,1,
+                            0,0,0).chunked(3)
+
+                        testGrid(cells) { cells, row, column ->
+                            cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
+                        }
+                    }
+                    "[O.0][...][...]" {
+                        cells = Cells.makeGrid(3, 3)
+                        cells.makeCellLive(0, 0)
+                        cells.makeCellLive(0, 2)
+
+                        val expected = listOf(
+                            0,2,0,
+                            1,2,1,
+                            0,0,0).chunked(3)
+
+                        testGrid(cells) { cells, row, column ->
+                            cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
+                        }
+                    }
+                    "[0..][.0.][...]" {
+                        cells = Cells.makeGrid(3, 3)
+                        cells.makeCellLive(0, 0)
+                        cells.makeCellLive(1, 1)
+
+                        val expected = listOf(
+                            1,2,1,
+                            2,1,1,
+                            1,1,1).chunked(3)
+
+                        testGrid(cells) { cells, row, column ->
+                            cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
+                        }
+                    }
+                    "[0..][..0][...]" {
+                        cells = Cells.makeGrid(3, 3)
+                        cells.makeCellLive(0, 0)
+                        cells.makeCellLive(1, 2)
+
+                        val expected = listOf(
+                            0,2,1,
+                            1,2,0,
+                            0,1,1).chunked(3)
+
+                        testGrid(cells) { cells, row, column ->
+                            cells.getNoOfLiveNeighbours(row, column) shouldBe expected[row][column]
+                        }
+                    }
+                    "[0..][...][.0.]" {
+                        true shouldBe false
+                    }
+                    "[0..][...][..0]" {
+                        true shouldBe false
+                    }
+                }
             }
         }
 //        "getCellLiveness" - {
