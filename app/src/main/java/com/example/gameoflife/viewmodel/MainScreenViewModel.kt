@@ -65,7 +65,7 @@ class MainScreenViewModel(
 
     fun startGameOfLife2() {
         gameJob = viewModelScope.launch(defaultDispatcher) {
-            while (stepsRemaining.value > 0) {
+            while (stepsRemaining.value > 0 && cells.value.numLive > 0) {
                 delay(stepDurationMs.value)
                 _cells.value = _cells.value.getNextGeneration()
                 _stepsRemaining.value -= 1

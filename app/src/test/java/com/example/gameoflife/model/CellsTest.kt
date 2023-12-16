@@ -35,6 +35,7 @@ class CellsTest: FreeSpec() {
 
                 cells.get().map { it.size } shouldBe listOf(2, 2, 2)
                 cells.get().flatten().any { it } shouldBe false
+                cells.numLive shouldBe 0
             }
         }
         "makeCellLive" - {
@@ -44,6 +45,7 @@ class CellsTest: FreeSpec() {
                 val cellsUnderTest = cells.makeCellLive(0,0)
 
                 cellsUnderTest.get().flatten().first() shouldBe true
+                cells.numLive shouldBe 1
             }
             "otherwise it does not change any cells" - {
                 "x out of bounds" {
@@ -52,6 +54,7 @@ class CellsTest: FreeSpec() {
                     val cellsUnderTest = cells.makeCellLive(1, 0)
 
                     cellsUnderTest.get().flatten().first() shouldBe false
+                    cells.numLive shouldBe 0
                 }
                 "y out of bounds" {
                     setup(rows = 1, columns = 1)
@@ -59,6 +62,7 @@ class CellsTest: FreeSpec() {
                     val cellsUnderTest = cells.makeCellLive(0, 1)
 
                     cellsUnderTest.get().flatten().first() shouldBe false
+                    cells.numLive shouldBe 0
                 }
             }
         }
@@ -69,6 +73,7 @@ class CellsTest: FreeSpec() {
                 val cellsUnderTest = cells.makeCellDead(0,0)
 
                 cellsUnderTest.get().flatten().first() shouldBe false
+                cells.numLive shouldBe 0
             }
             "otherwise it does not change any cells and returns false" - {
                 "x out of bounds" {
@@ -78,6 +83,7 @@ class CellsTest: FreeSpec() {
                     val cellsUnderTest = cells.makeCellDead(1, 0)
 
                     cellsUnderTest.get().flatten().first() shouldBe true
+                    cells.numLive shouldBe 1
                 }
                 "y out of bounds" {
                     setup(rows = 1, columns = 1)
@@ -86,6 +92,7 @@ class CellsTest: FreeSpec() {
                     val cellsUnderTest = cells.makeCellDead(0, 1)
 
                     cellsUnderTest.get().flatten().first() shouldBe true
+                    cells.numLive shouldBe 1
                 }
             }
         }
@@ -96,6 +103,7 @@ class CellsTest: FreeSpec() {
                 val cellsUnderTest = cells.toggleLiveness(0, 0)
 
                 cellsUnderTest.get()[0][0] shouldBe true
+                cells.numLive shouldBe 1
             }
             "otherwise it becomes dead" {
                 cells = Cells.makeGrid(1, 1)
@@ -104,6 +112,7 @@ class CellsTest: FreeSpec() {
                 val cellsUnderTest = cells.toggleLiveness(0, 0)
 
                 cellsUnderTest.get()[0][0] shouldBe false
+                cells.numLive shouldBe 0
             }
         }
         "getNoOfLiveNeighbours" - {
@@ -114,6 +123,7 @@ class CellsTest: FreeSpec() {
                     testGrid(cells) { cells, row, column ->
                         cells.getNoOfLiveNeighbours(row, column) shouldBe 0
                     }
+                    cells.numLive shouldBe 0
                 }
                 // Note can exploit rotational or reflectional symmetry to exhaustively test these ...
                 "1 live" - {
@@ -431,6 +441,7 @@ class CellsTest: FreeSpec() {
                     val cellsUnderTest = cells.getNextGeneration()
 
                     cellsUnderTest.get().flatten() shouldBe cells.get().flatten()
+                    cells.numLive shouldBe 4
                 }
                 "blinker" {
                     cells = Cells.makeGrid(3, 3)
@@ -443,6 +454,7 @@ class CellsTest: FreeSpec() {
                     secondGeneration.get()[1] shouldBe listOf(false, true, false)
                     secondGeneration.get()[2] shouldBe listOf(false, true, false)
                     thirdGeneration.get().flatten() shouldBe cells.get().flatten()
+                    cells.numLive shouldBe 3
                 }
                 "glider" {
                     /*
@@ -478,6 +490,7 @@ class CellsTest: FreeSpec() {
                     fifthGeneration.get()[1] shouldBe listOf(false, false, false, true, false)
                     fifthGeneration.get()[2] shouldBe listOf(false, false, false, false, true)
                     fifthGeneration.get()[3] shouldBe listOf(false, false, true, true, true)
+                    cells.numLive shouldBe 5
                 }
             }
         }
