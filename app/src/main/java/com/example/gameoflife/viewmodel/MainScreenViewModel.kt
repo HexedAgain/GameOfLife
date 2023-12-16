@@ -22,8 +22,24 @@ class MainScreenViewModel(
     private val _stepDurationMs = MutableStateFlow(stepDuration)
     val stepDurationMs = _stepDurationMs.asStateFlow()
 
-    private val _stepsRemaining = MutableStateFlow(0)
+    private val _stepsRemaining = MutableStateFlow(10_000)
     val stepsRemaining = _stepsRemaining.asStateFlow()
+
+    private val _rows = MutableStateFlow("")
+    val rows = _rows.asStateFlow()
+    fun updateRows(newRows: String) {
+        if (newRows.length <= 2) {
+            _rows.value = newRows
+        }
+    }
+
+    private val _columns = MutableStateFlow("")
+    val columns = _columns.asStateFlow()
+    fun updateColumns(newColumns: String) {
+        if (newColumns.length <= 2) {
+            _columns.value = newColumns
+        }
+    }
 
     fun initialiseCells(rows: Int, columns: Int) {
         _cells.value = Cells.makeGrid(rows, columns)
@@ -37,6 +53,17 @@ class MainScreenViewModel(
 
     fun startGameOfLife(noOfGenerations: Int) {
         _stepsRemaining.value = noOfGenerations
+        gameJob = viewModelScope.launch(defaultDispatcher) {
+            while (stepsRemaining.value > 0 && cells.value.get().flatten().any { it }) {
+                delay(stepDurationMs.value)
+                _cells.value = _cells.value.getNextGeneration()
+                _stepsRemaining.value -= 1
+            }
+            stopGameOfLife()
+        }
+    }
+
+    fun startGameOfLife2() {
         gameJob = viewModelScope.launch(defaultDispatcher) {
             while (stepsRemaining.value > 0) {
                 delay(stepDurationMs.value)
