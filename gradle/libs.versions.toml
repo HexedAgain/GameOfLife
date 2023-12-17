@@ -1,6 +1,8 @@
 [versions]
 koin = "3.5.0"
 koin-compose = "1.1.0"
+timber = "5.0.1"
+kotest = "5.3.1"
 
 [libraries]
 # koin
@@ -9,5 +11,14 @@ koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin-compose" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 
+# logging
+timber = { module = "com.jakewharton.timber:timber", version.ref = "timber"}
+
+# testing
+kotest-runner = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest"}
+kotest-property = { module = "io.kotest:kotest-property", version.ref = "kotest"}
+kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest"}
+
 [bundles]
 koin-compose = ["koin-core", "koin-android", "koin-compose", "koin-androidx-compose"]
+kotest = ["kotest-runner", "kotest-property", "kotest-assertions"]

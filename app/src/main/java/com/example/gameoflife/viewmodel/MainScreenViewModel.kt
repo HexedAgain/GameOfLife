@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.lang.NumberFormatException
 
 class MainScreenViewModel(
     private val defaultDispatcher: CoroutineDispatcher,
@@ -25,24 +26,30 @@ class MainScreenViewModel(
     private val _stepsRemaining = MutableStateFlow(10_000)
     val stepsRemaining = _stepsRemaining.asStateFlow()
 
-    private val _rows = MutableStateFlow("")
+    private val _rows = MutableStateFlow<Int?>(null)
     val rows = _rows.asStateFlow()
     fun updateRows(newRows: String) {
-        if (newRows.length <= 2) {
-            _rows.value = newRows
+        val numericNewRows = newRows.toIntOrNull() ?: return
+        if (numericNewRows <= MAX_ROWS) {
+            _rows.value = numericNewRows
         }
     }
 
-    private val _columns = MutableStateFlow("")
+    private val _columns = MutableStateFlow<Int?>(null)
     val columns = _columns.asStateFlow()
     fun updateColumns(newColumns: String) {
-        if (newColumns.length <= 2) {
-            _columns.value = newColumns
+        val numericNewColumns = newColumns.toIntOrNull() ?: return
+        if (numericNewColumns <= MAX_COLUMNS) {
+            _columns.value = numericNewColumns
         }
     }
 
-    fun initialiseCells(rows: Int, columns: Int) {
-        _cells.value = Cells.makeGrid(rows, columns)
+    private fun String.toIntOrNull(): Int? {
+        return try { this.toInt() } catch (ex: NumberFormatException) { null }
+    }
+
+    fun initialiseCells(rows: Int?, columns: Int?) {
+        _cells.value = Cells.makeGrid(rows ?: return, columns ?: return)
     }
 
     private var gameJob: Job? = null
@@ -85,5 +92,10 @@ class MainScreenViewModel(
     fun stopGameOfLife() {
         _stepsRemaining.value = 0
         gameJob?.cancel()
+    }
+
+    companion object {
+        const val MAX_ROWS = 99
+        const val MAX_COLUMNS = 99
     }
 }

@@ -71,8 +71,8 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
-    testImplementation("io.kotest:kotest-runner-junit5:5.8.0")
-    testImplementation("io.kotest:kotest-assertions-core:5.8.0")
-
+    implementation(libs.timber)
     implementation(libs.bundles.koin.compose)
+
+    testImplementation(libs.bundles.kotest)
 }

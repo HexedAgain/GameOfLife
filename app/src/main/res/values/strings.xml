@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">GameOfLife</string>
+
+    <string name="number_of_rows">Rows</string>
+    <string name="number_of_columns">Columns</string>
+    <string name="update_grid">Update Grid</string>
+    <string name="play_game_of_life">Play Game Of Life</string>
 </resources>

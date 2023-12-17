@@ -5,9 +5,7 @@ package com.example.gameoflife.viewmodel
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.testCoroutineScheduler
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -77,7 +75,7 @@ class MainScreenViewModelTest: FreeSpec() {
              * X X X    X X X    X X X
              */
             setup()
-            viewModel.initialiseCells(rows = 3, columns = 3)
+            viewModel.initialiseCells(3, 3)
             viewModel.updateCell(0, 1)
             viewModel.updateCell(1, 0)
             viewModel.updateCell(1, 2)
