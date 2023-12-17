@@ -12,7 +12,8 @@ Set number of rows and columns, update the grid, toggle cell liveness manually a
 - Update the play speed (currently hardcoded to a second)
 - Add option to pause / unpause game
 
-### Long In The Future Plans ...
+### Not So Near Future Plans ...
+- Add ability for grid to wrap (i.e. connecting left and right edges)
 - Add ability to drag over tiles, and from this selection choose from a known library of configurations (like glider etc ...)
 - Add ability to step backwards in time (with current implementation of Cells this would involve starting from initial configuration and then stepping forwards)
 - Add ability to save a configuration and then load it
