@@ -15,3 +15,4 @@ Set number of rows and columns, update the grid, toggle cell liveness manually a
 ### Long In The Future Plans ...
 - Add ability to drag over tiles, and from this selection choose from a known library of configurations (like glider etc ...)
 - Add ability to step backwards in time (with current implementation of Cells this would involve starting from initial configuration and then stepping forwards)
+- Add ability to save a configuration and then load it
