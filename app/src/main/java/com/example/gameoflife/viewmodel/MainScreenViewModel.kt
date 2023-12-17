@@ -15,9 +15,9 @@ import java.lang.NumberFormatException
 
 class MainScreenViewModel(
     private val defaultDispatcher: CoroutineDispatcher,
-    stepDuration: Long = 1_000
+    stepDuration: Long = 250
 ): ViewModel() {
-    private val _cells = MutableStateFlow(Cells.makeGrid(10, 10))
+    private val _cells = MutableStateFlow(Cells.makeGrid(25, 25))
     val cells = _cells.asStateFlow()
 
     private val _stepDurationMs = MutableStateFlow(stepDuration)

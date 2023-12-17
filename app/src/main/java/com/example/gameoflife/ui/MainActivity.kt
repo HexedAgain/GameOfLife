@@ -70,7 +70,9 @@ class MainActivity: ComponentActivity() {
 
 @Composable
 fun GameOfLifeContent() {
-    Column {
+    Column(
+        modifier = Modifier.padding(8.dp)
+    ) {
         CellsGrid()
         NumberOfCellsRow()
         PlayGameOfLife()
@@ -90,7 +92,7 @@ fun NumberOfCellsRow(
         OutlinedTextField(
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             modifier = Modifier
-                .width(140.dp)
+                .width(120.dp)
                 .padding(8.dp),
             label = { Text(stringResource(id = R.string.number_of_rows), fontSize = 14.sp) },
             value = "${rows ?: ""}",
@@ -99,7 +101,7 @@ fun NumberOfCellsRow(
         OutlinedTextField(
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             modifier = Modifier
-                .width(140.dp)
+                .width(120.dp)
                 .padding(8.dp),
             label = { Text(stringResource(id = R.string.number_of_columns)) },
             value = "${columns ?: ""}",
@@ -137,15 +139,14 @@ fun CellsGrid(
             .pointerInput(Pair(numRows, numCols)) {
                 detectTapGestures(
                     onTap = {
-                        val offsetX = it.x.toDp(context) - 8.dp
-                        val offsetY = it.y.toDp(context) - 8.dp
+                        val offsetX = it.x.toDp(context) - 0.dp
+                        val offsetY = it.y.toDp(context) - 0.dp
                         val columnIdx = (offsetX / width).toInt()
                         val rowIdx = (offsetY / height).toInt()
                         mainScreenViewModel.updateCell(row = rowIdx, column = columnIdx)
                     }
                 )
             }
-            .padding(8.dp)
             .fillMaxHeight(.5f)
             .fillMaxWidth()
             .border(border = BorderStroke(1.dp, Color.Gray))
