@@ -17,7 +17,7 @@ class MainScreenViewModel(
     private val defaultDispatcher: CoroutineDispatcher,
     stepDuration: Long = 1_000
 ): ViewModel() {
-    private val _cells = MutableStateFlow(Cells.makeGrid(0, 0))
+    private val _cells = MutableStateFlow(Cells.makeGrid(10, 10))
     val cells = _cells.asStateFlow()
 
     private val _stepDurationMs = MutableStateFlow(stepDuration)
@@ -26,22 +26,24 @@ class MainScreenViewModel(
     private val _stepsRemaining = MutableStateFlow(10_000)
     val stepsRemaining = _stepsRemaining.asStateFlow()
 
-    private val _rows = MutableStateFlow<Int?>(null)
+    private val _rows = MutableStateFlow(_cells.value.get().size.takeIf { it > 0 })
     val rows = _rows.asStateFlow()
     fun updateRows(newRows: String) {
-        val numericNewRows = newRows.toIntOrNull() ?: return
-        if (numericNewRows <= MAX_ROWS) {
-            _rows.value = numericNewRows
+        val numericNewRows = newRows.toIntOrNull()
+        if (numericNewRows != null && numericNewRows > MAX_ROWS) {
+            return
         }
+        _rows.value = numericNewRows
     }
 
-    private val _columns = MutableStateFlow<Int?>(null)
+    private val _columns = MutableStateFlow(_cells.value.get().firstOrNull()?.size?.takeIf { it > 0 })
     val columns = _columns.asStateFlow()
     fun updateColumns(newColumns: String) {
-        val numericNewColumns = newColumns.toIntOrNull() ?: return
-        if (numericNewColumns <= MAX_COLUMNS) {
-            _columns.value = numericNewColumns
+        val numericNewColumns = newColumns.toIntOrNull()
+        if (numericNewColumns != null && numericNewColumns > MAX_COLUMNS) {
+            return
         }
+        _columns.value = numericNewColumns
     }
 
     private fun String.toIntOrNull(): Int? {
