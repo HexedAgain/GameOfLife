@@ -4,5 +4,14 @@
     <string name="number_of_rows">Rows</string>
     <string name="number_of_columns">Columns</string>
     <string name="update_grid">Update Grid</string>
-    <string name="play_game_of_life">Play Game Of Life</string>
+    <string name="content_descr_play_game_of_life">Play Game Of Life</string>
+    <string name="content_descr_pause_game_of_life">Pause Game Of Life</string>
+    <string name="content_descr_clear_cells">Clear Cells</string>
+    <string name="content_descr_randomise_cell_liveness">Randomise Cell Liveness</string>
+    <string name="content_descr_game_settings">Game Settings</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="clear_cells">Clear</string>
+    <string name="randomise_cells">Randomise</string>
+    <string name="game_settings">Settings</string>
 </resources>

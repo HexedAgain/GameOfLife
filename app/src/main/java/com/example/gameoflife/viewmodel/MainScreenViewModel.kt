@@ -26,10 +26,13 @@ class MainScreenViewModel(
     private val _stepsRemaining = MutableStateFlow(10_000)
     val stepsRemaining = _stepsRemaining.asStateFlow()
 
+    private val _isPlaying = MutableStateFlow(false)
+    val isPlaying = _isPlaying.asStateFlow()
+
     private val _rows = MutableStateFlow(_cells.value.get().size.takeIf { it > 0 })
     val rows = _rows.asStateFlow()
     fun updateRows(newRows: String) {
-        val numericNewRows = newRows.toIntOrNull()
+        val numericNewRows = kotlin.runCatching { newRows.toInt() }.getOrNull()
         if (numericNewRows != null && numericNewRows > MAX_ROWS) {
             return
         }
@@ -39,15 +42,11 @@ class MainScreenViewModel(
     private val _columns = MutableStateFlow(_cells.value.get().firstOrNull()?.size?.takeIf { it > 0 })
     val columns = _columns.asStateFlow()
     fun updateColumns(newColumns: String) {
-        val numericNewColumns = newColumns.toIntOrNull()
+        val numericNewColumns = kotlin.runCatching { newColumns.toInt() }.getOrNull()
         if (numericNewColumns != null && numericNewColumns > MAX_COLUMNS) {
             return
         }
         _columns.value = numericNewColumns
-    }
-
-    private fun String.toIntOrNull(): Int? {
-        return try { this.toInt() } catch (ex: NumberFormatException) { null }
     }
 
     fun initialiseCells(rows: Int?, columns: Int?) {
