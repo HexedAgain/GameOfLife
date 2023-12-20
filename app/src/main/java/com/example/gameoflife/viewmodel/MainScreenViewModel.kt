@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 class MainScreenViewModel(
     private val defaultDispatcher: CoroutineDispatcher,
     stepsRemaining: Int = 10_000,
-    stepDuration: Long = 250
+    stepDuration: Long = 1_000
 ): ViewModel() {
     private var initialStepsRemaining = stepsRemaining
     private val _cells = MutableStateFlow(Cells.makeGrid(25, 25))
