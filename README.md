@@ -6,10 +6,10 @@ Download and build the application (obviously), then ...
 Set number of rows and columns, update the grid, toggle cell liveness manually and then hit the play button
 
 ### Near Future Plans
+- Address an issue with the modal bottom sheet where it does not scroll properly to bottom input field when focussed
 - Tidy up the UI (and fix the grid measurement, currently pretty bad)
 - Add ability to randomise cell liveness as opposed to manually updating the grid
 - Display the duration of the previous game (number of steps)
-- Update the play speed (currently hardcoded to a second)
 - Add option to pause / unpause game
 
 ### Not So Near Future Plans ...
