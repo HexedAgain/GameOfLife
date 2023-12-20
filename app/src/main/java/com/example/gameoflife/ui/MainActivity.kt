@@ -119,29 +119,30 @@ fun GameOfLifeContent(
             horizontalArrangement = Arrangement.SpaceAround,
             modifier = Modifier.fillMaxWidth()
         ) {
-            if (isPlaying) {
+            if (!isPlaying) {
                 ActionButton(
                     ActionButtonConfig.actionFor(ActionType.PLAY),
-                    actionClick = { mainScreenViewModel.startGameOfLife2() }
+                    actionClick = { mainScreenViewModel.startGameOfLife() }
+                )
+                ActionButton(
+                    ActionButtonConfig.actionFor(ActionType.RANDOMISE),
+                    isEnabled = false,
+                    actionClick = {}
+                )
+                ActionButton(
+                    ActionButtonConfig.actionFor(ActionType.CLEAR),
+                    actionClick = { mainScreenViewModel.clearCells() }
+                )
+                ActionButton(
+                    ActionButtonConfig.actionFor(ActionType.SETTINGS),
+                    actionClick = { onShowBottomSheet() }
                 )
             } else {
                 ActionButton(
                     ActionButtonConfig.actionFor(ActionType.PAUSE),
-                    actionClick = { mainScreenViewModel.startGameOfLife2() }
+                    actionClick = { mainScreenViewModel.pauseGameOfLife() }
                 )
             }
-            ActionButton(
-                ActionButtonConfig.actionFor(ActionType.RANDOMISE),
-                actionClick = {}
-            )
-            ActionButton(
-                ActionButtonConfig.actionFor(ActionType.CLEAR),
-                actionClick = {}
-            )
-            ActionButton(
-                ActionButtonConfig.actionFor(ActionType.SETTINGS),
-                actionClick = { onShowBottomSheet() }
-            )
         }
     }
 }
@@ -280,6 +281,7 @@ fun CellsGrid(
 @Composable
 fun ActionButton(
     actionButtonConfig: ActionButtonConfig,
+    isEnabled: Boolean = true,
     actionClick: () -> Unit,
 ) {
     Column(
@@ -287,9 +289,10 @@ fun ActionButton(
     ) {
         IconButton(
             onClick = actionClick,
+            enabled = isEnabled,
             modifier = Modifier
                 .clip(CircleShape)
-                .background(color = MaterialTheme.colorScheme.primary),
+                .background(color = if (isEnabled) MaterialTheme.colorScheme.primary else Color.Gray),
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Icon(

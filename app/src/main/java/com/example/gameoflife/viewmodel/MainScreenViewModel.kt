@@ -11,10 +11,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.lang.NumberFormatException
 
 class MainScreenViewModel(
     private val defaultDispatcher: CoroutineDispatcher,
+    stepsRemaining: Int = 10_000,
     stepDuration: Long = 250
 ): ViewModel() {
     private val _cells = MutableStateFlow(Cells.makeGrid(25, 25))
@@ -23,8 +23,17 @@ class MainScreenViewModel(
     private val _stepDurationMs = MutableStateFlow(stepDuration)
     val stepDurationMs = _stepDurationMs.asStateFlow()
 
-    private val _stepsRemaining = MutableStateFlow(10_000)
+    fun updateStepDuration(newDuration: Long) {
+        if (newDuration < 0) return
+        _stepDurationMs.value = newDuration
+    }
+
+    private val _stepsRemaining = MutableStateFlow(stepsRemaining)
     val stepsRemaining = _stepsRemaining.asStateFlow()
+    fun updateStepsRemaining(newStepsRemaining: Int) {
+        if (newStepsRemaining < 0) return
+        _stepsRemaining.value = newStepsRemaining
+    }
 
     private val _isPlaying = MutableStateFlow(false)
     val isPlaying = _isPlaying.asStateFlow()
@@ -51,6 +60,12 @@ class MainScreenViewModel(
 
     fun initialiseCells(rows: Int?, columns: Int?) {
         _cells.value = Cells.makeGrid(rows ?: return, columns ?: return)
+        _rows.value = rows
+        _columns.value = columns
+    }
+
+    fun clearCells() {
+        _cells.value = Cells.makeGrid(_rows.value ?: return, _columns.value ?: return)
     }
 
     private var gameJob: Job? = null
@@ -59,19 +74,8 @@ class MainScreenViewModel(
         _cells.update { it.toggleLiveness(row, column) }
     }
 
-    fun startGameOfLife(noOfGenerations: Int) {
-        _stepsRemaining.value = noOfGenerations
-        gameJob = viewModelScope.launch(defaultDispatcher) {
-            while (stepsRemaining.value > 0 && cells.value.get().flatten().any { it }) {
-                delay(stepDurationMs.value)
-                _cells.value = _cells.value.getNextGeneration()
-                _stepsRemaining.value -= 1
-            }
-            stopGameOfLife()
-        }
-    }
-
-    fun startGameOfLife2() {
+    fun startGameOfLife() {
+        _isPlaying.value = true
         gameJob = viewModelScope.launch(defaultDispatcher) {
             while (stepsRemaining.value > 0 && cells.value.numLive > 0) {
                 delay(stepDurationMs.value)
@@ -79,20 +83,23 @@ class MainScreenViewModel(
                 _stepsRemaining.value -= 1
             }
             this.cancel()
+            _isPlaying.value = false
         }
     }
 
     fun pauseGameOfLife() {
         gameJob?.cancel()
+        _isPlaying.value = false
     }
 
     fun continueGameOfLife() {
-       startGameOfLife(stepsRemaining.value)
+       startGameOfLife()
     }
 
     fun stopGameOfLife() {
         _stepsRemaining.value = 0
         gameJob?.cancel()
+        _isPlaying.value = false
     }
 
     companion object {
