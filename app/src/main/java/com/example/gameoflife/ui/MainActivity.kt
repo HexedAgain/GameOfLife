@@ -31,7 +31,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,7 +38,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -72,40 +70,21 @@ class MainActivity: ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val scope = rememberCoroutineScope()
                     var showBottomSheet by remember { mutableStateOf(false) }
                     val sheetState = rememberStandardBottomSheetState(skipHiddenState = false)
-                    val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = sheetState)
                     LaunchedEffect(Unit) {
                         sheetState.show() // this is a hack because the modal sheet instantly opens
                         sheetState.hide() // without animation when first triggered (looks crapola)
                     }
-//                    BottomSheetScaffold(
-//                        scaffoldState = scaffoldState,
-//                        sheetContent = {
-//                            Column(modifier = Modifier.fillMaxHeight(.75f)){
-//                                Text("sheet content")
-//                            }
-//                        },
-//                        sheetPeekHeight = 0.dp
-//                    ) {
-//                        GameOfLifeContent(sheetState, scope)
-//                    }
                     if (showBottomSheet) {
-                        LaunchedEffect(Unit) {
-                            sheetState.hide()
-                        }
                         ModalBottomSheet(
                             onDismissRequest = { showBottomSheet = false },
                             sheetState = sheetState
                         ) {
-//                            Column(modifier = Modifier.fillMaxHeight(0.75f)) {
-                                Text("test")
-//                            }
+                            SheetContent()
                         }
                     }
-                    //GameOfLifeContent(sheetState, scope)
-                    GameOfLifeContent2() {
+                    GameOfLifeContent() {
                         showBottomSheet = true
                     }
                 }
@@ -116,51 +95,19 @@ class MainActivity: ComponentActivity() {
 
 @Composable
 fun SheetContent() {
-    Column() {
-
+    Column(
+        modifier = Modifier.fillMaxHeight(.5f)
+    ) {
+        NumberOfCellsRow()
+        AnimationSpeedRow()
+        NumberOfGenerationsRow()
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-//fun GameOfLifeContent(sheetState: SheetState, scope: CoroutineScope) {
 fun GameOfLifeContent(
     mainScreenViewModel: MainScreenViewModel = koinViewModel(),
-    onShow: () -> Unit
-) {
-    Column(
-        modifier = Modifier.padding(8.dp)
-    ) {
-        CellsGrid()
-        Row() {
-//            Button(onClick = { mainScreenViewModel.startGameOfLife2() }) {
-//                Text(stringResource(id = R.string.play_game_of_life))
-//            }
-//            Button( onClick = {}) {
-//                Text(stringResource(id = R.string.play_game_of_life))
-//            }
-            IconButton(onClick = { /*TODO*/ }) {
-
-            }
-        }
-        Button(onClick = {
-            onShow()
-//            scope.launch {
-//                Timber.e("showing sheet")
-//                sheetState.expand()
-//            }
-        }) {
-            Text ("show sheet")
-        }
-        NumberOfCellsRow()
-        PlayGameOfLife()
-    }
-}
-
-@Composable
-fun GameOfLifeContent2(
-    mainScreenViewModel: MainScreenViewModel = koinViewModel(),
-    onShow: () -> Unit
+    onShowBottomSheet: () -> Unit
 ) {
     val isPlaying by mainScreenViewModel.isPlaying.collectAsState()
     Column(
@@ -193,13 +140,12 @@ fun GameOfLifeContent2(
             )
             ActionButton(
                 ActionButtonConfig.actionFor(ActionType.SETTINGS),
-                actionClick = {}
+                actionClick = { onShowBottomSheet() }
             )
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NumberOfCellsRow(
     mainScreenViewModel: MainScreenViewModel = koinViewModel()
@@ -207,6 +153,7 @@ fun NumberOfCellsRow(
     val rows by mainScreenViewModel.rows.collectAsState()
     val columns by mainScreenViewModel.columns.collectAsState()
     Row(
+        modifier = Modifier.padding(horizontal = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         OutlinedTextField(
@@ -227,12 +174,49 @@ fun NumberOfCellsRow(
             value = "${columns ?: ""}",
             onValueChange = { mainScreenViewModel.updateColumns(it) }
         )
+        Spacer(modifier = Modifier.weight(1f))
         Button(
             onClick = { mainScreenViewModel.initialiseCells(rows, columns) },
             enabled = rows != null && columns != null
         ) {
             Text(stringResource(id = R.string.update_grid))
         }
+    }
+}
+
+@Composable
+fun AnimationSpeedRow(mainScreenViewModel: MainScreenViewModel = koinViewModel()) {
+    val animationSpeed by mainScreenViewModel.stepDurationMs.collectAsState()
+    Row(
+        modifier = Modifier.padding(horizontal = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        OutlinedTextField(
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+            modifier = Modifier
+                .padding(8.dp),
+            label = { Text(stringResource(id = R.string.animation_speed), fontSize = 14.sp) },
+            value = "${animationSpeed ?: ""}",
+            onValueChange = { }
+        )
+    }
+}
+
+@Composable
+fun NumberOfGenerationsRow(mainScreenViewModel: MainScreenViewModel = koinViewModel()) {
+    val noOfGenerations by mainScreenViewModel.stepsRemaining.collectAsState()
+    Row(
+        modifier = Modifier.padding(horizontal = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        OutlinedTextField(
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+            modifier = Modifier
+                .padding(8.dp),
+            label = { Text(stringResource(id = R.string.number_of_generations), fontSize = 14.sp) },
+            value = "${noOfGenerations ?: ""}",
+            onValueChange = { }
+        )
     }
 }
 
@@ -253,7 +237,6 @@ fun CellsGrid(
     val gridHeight = configuration.screenHeightDp.dp - 128.dp
     val width = gridWidth / numRows
     val height = gridHeight / numCols
-//    val height = colHeight / numCols
     val context = LocalContext.current
     Column(
         // Note: defining clickable on each of the cells seems to be a massive performance hit
@@ -291,15 +274,6 @@ fun CellsGrid(
                 }
             }
         }
-    }
-}
-
-@Composable
-fun PlayGameOfLife(mainScreenViewModel: MainScreenViewModel = koinViewModel()) {
-    Button(onClick = {
-        mainScreenViewModel.startGameOfLife2()
-    }) {
-        Text(stringResource(id = R.string.content_descr_play_game_of_life))
     }
 }
 
