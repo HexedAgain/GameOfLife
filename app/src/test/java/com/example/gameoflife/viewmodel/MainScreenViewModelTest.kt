@@ -103,6 +103,15 @@ class MainScreenViewModelTest: FreeSpec() {
 
                 viewModel.stepsRemaining.value shouldBe 123
             }
+            "the value passed will be used to reset the steps remaining if a game runs to completion" {
+                setup(initialStepsRemaining = 1)
+
+                viewModel.updateStepsRemaining(2)
+                viewModel.startGameOfLife()
+                defaultDispatcher.scheduler.advanceUntilIdle()
+
+                viewModel.stepsRemaining.value shouldBe 2
+            }
         }
         "updateStepDuration" - {
             "if duration passed in is negative it does nothing" {
@@ -157,13 +166,19 @@ class MainScreenViewModelTest: FreeSpec() {
                     listOf(false, false, false),
                 )
 
-                viewModel.stepsRemaining.value shouldBe 0
+//                viewModel.stepsRemaining.value shouldBe 0
             }
-            "once step counter becomes zero the counter stops decrementing and isPlaying becomes false" {
-                defaultDispatcher.scheduler.advanceTimeBy(100)
+            "once step counter becomes zero ..." - {
+                "the steps remaining is reset to its original value and the counter stops decrementing" {
+                    viewModel.stepsRemaining.value shouldBe 2
 
-                viewModel.stepsRemaining.value shouldBe 0
-                viewModel.isPlaying.value shouldBe false
+                    defaultDispatcher.scheduler.advanceTimeBy(100)
+
+                    viewModel.stepsRemaining.value shouldBe 2
+                }
+                "isPlaying becomes false" {
+                    viewModel.isPlaying.value shouldBe false
+                }
             }
         }
 
@@ -201,7 +216,6 @@ class MainScreenViewModelTest: FreeSpec() {
             viewModel.updateCell(1, 0)
             viewModel.updateCell(1, 2)
             viewModel.startGameOfLife()
-            defaultDispatcher.scheduler.advanceTimeBy(101)
             viewModel.pauseGameOfLife()
 
             viewModel.continueGameOfLife()
@@ -213,10 +227,10 @@ class MainScreenViewModelTest: FreeSpec() {
             "the counter will decrement again and cells advance to the next state every step duration" {
                 defaultDispatcher.scheduler.advanceTimeBy(101)
 
-                viewModel.stepsRemaining.value shouldBe 0
+                viewModel.stepsRemaining.value shouldBe 1
                 viewModel.cells.value.get() shouldBe listOf(
-                    listOf(false, false, false),
-                    listOf(false, false, false),
+                    listOf(false, true, false),
+                    listOf(false, true, false),
                     listOf(false, false, false),
                 )
             }

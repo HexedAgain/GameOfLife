@@ -17,6 +17,7 @@ class MainScreenViewModel(
     stepsRemaining: Int = 10_000,
     stepDuration: Long = 250
 ): ViewModel() {
+    private var initialStepsRemaining = stepsRemaining
     private val _cells = MutableStateFlow(Cells.makeGrid(25, 25))
     val cells = _cells.asStateFlow()
 
@@ -33,6 +34,7 @@ class MainScreenViewModel(
     fun updateStepsRemaining(newStepsRemaining: Int) {
         if (newStepsRemaining < 0) return
         _stepsRemaining.value = newStepsRemaining
+        initialStepsRemaining = newStepsRemaining
     }
 
     private val _isPlaying = MutableStateFlow(false)
@@ -84,6 +86,7 @@ class MainScreenViewModel(
             }
             this.cancel()
             _isPlaying.value = false
+            _stepsRemaining.value = initialStepsRemaining
         }
     }
 
