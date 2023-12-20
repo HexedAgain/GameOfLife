@@ -15,16 +15,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -34,9 +33,8 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberStandardBottomSheetState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -74,15 +72,8 @@ class MainActivity: ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     var showBottomSheet by remember { mutableStateOf(false) }
-                    val sheetState = rememberStandardBottomSheetState(skipHiddenState = false)
-                    LaunchedEffect(Unit) {
-                        sheetState.show() // this is a hack because the modal sheet instantly opens
-                        sheetState.hide() // without animation when first triggered (looks crapola)
-                    }
+                    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
                     if (showBottomSheet) {
-                        LaunchedEffect(Unit) {
-                            sheetState.expand()
-                        }
                         ModalBottomSheet(
                             onDismissRequest = { showBottomSheet = false },
                             sheetState = sheetState
@@ -101,29 +92,16 @@ class MainActivity: ComponentActivity() {
 
 @Composable
 fun SheetContent() {
-    LazyColumn(
-        modifier = Modifier.fillMaxHeight(.75f)
+    val scrollState = rememberScrollState()
+    Column(
+        modifier = Modifier
+            .verticalScroll(state = scrollState)
     ) {
-        item {
-            NumberOfCellsRow()
-        }
-        item {
-            AnimationSpeedRow()
-        }
-        item {
-            NumberOfGenerationsRow()
-        }
+        NumberOfCellsRow()
+        AnimationSpeedRow()
+        NumberOfGenerationsRow()
+        Box(modifier = Modifier.height(16.dp))
     }
-//    val scrollState = rememberScrollState()
-//    Column(
-//        modifier = Modifier
-//            .fillMaxHeight(.25f)
-//            .scrollable(state = scrollState, orientation = Orientation.Vertical)
-//    ) {
-//        NumberOfCellsRow()
-//        AnimationSpeedRow()
-//        NumberOfGenerationsRow()
-//    }
 }
 
 @Composable
@@ -226,7 +204,9 @@ fun AnimationSpeedRow(mainScreenViewModel: MainScreenViewModel = koinViewModel()
 }
 
 @Composable
-fun NumberOfGenerationsRow(mainScreenViewModel: MainScreenViewModel = koinViewModel()) {
+fun NumberOfGenerationsRow(
+    mainScreenViewModel: MainScreenViewModel = koinViewModel()
+) {
     val noOfGenerations by mainScreenViewModel.stepsRemaining.collectAsState()
     Row(
         modifier = Modifier.padding(horizontal = 8.dp),
@@ -327,52 +307,5 @@ fun ActionButton(
         Text(
             text = stringResource(id = actionButtonConfig.textResId)
         )
-    }
-}
-
-data class ActionButtonConfig(
-    val contentDescriptionResId: Int,
-    val textResId: Int,
-    val iconResId: Int
-) {
-    enum class ActionType {
-        PLAY,
-        PAUSE,
-        RANDOMISE,
-        CLEAR,
-        SETTINGS
-    }
-
-    companion object {
-        fun actionFor (actionType: ActionType): ActionButtonConfig {
-            return when (actionType) {
-                ActionType.PLAY -> ActionButtonConfig(
-                    iconResId = R.drawable.play_arrow,
-                    textResId = R.string.play,
-                    contentDescriptionResId = R.string.content_descr_play_game_of_life,
-                )
-
-                ActionType.PAUSE -> ActionButtonConfig(
-                    iconResId = R.drawable.pause,
-                    textResId = R.string.pause,
-                    contentDescriptionResId = R.string.content_descr_pause_game_of_life
-                )
-                ActionType.RANDOMISE -> ActionButtonConfig(
-                    iconResId = R.drawable.refresh,
-                    textResId = R.string.randomise_cells,
-                    contentDescriptionResId = R.string.content_descr_randomise_cell_liveness
-                )
-                ActionType.CLEAR -> ActionButtonConfig(
-                    iconResId = R.drawable.clear,
-                    textResId = R.string.clear_cells,
-                    contentDescriptionResId = R.string.content_descr_clear_cells
-                )
-                ActionType.SETTINGS -> ActionButtonConfig(
-                    iconResId = R.drawable.settings,
-                    textResId = R.string.game_settings,
-                    contentDescriptionResId = R.string.content_descr_game_settings
-                )
-            }
-        }
     }
 }
