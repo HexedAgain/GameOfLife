@@ -9,7 +9,6 @@ Set number of rows and columns, update the grid, toggle cell liveness manually a
 - Tidy up the UI (and fix the grid measurement, currently pretty bad)
 - Add ability to randomise cell liveness as opposed to manually updating the grid (really this should only apply to a region)
 - Display the duration of the previous game (number of steps)
-- Add option to pause / unpause game
 
 ### Not So Near Future Plans ...
 - Add ability for grid to wrap (i.e. connecting left and right edges)
