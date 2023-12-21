@@ -65,6 +65,23 @@ class MainScreenViewModelTest: FreeSpec() {
                 viewModel.clearCells()
 
                 viewModel.cells.value.get().flatten() shouldBe listOf(false, false)
+                viewModel.stepsRemaining
+            }
+            "it resets the steps remaining to its initial value" {
+                // TODO, would be better to have some stock configurations to simplify the tests
+                setup(initialStepsRemaining = 2, initialStepDuration = 100)
+                viewModel.startGameOfLife()
+                viewModel.initialiseCells(rows = 2, columns = 2)
+                viewModel.updateCell(0, 0)
+                viewModel.updateCell(0, 1)
+                viewModel.updateCell(1, 0)
+                defaultDispatcher.scheduler.advanceTimeBy(101)
+                viewModel.pauseGameOfLife()
+                viewModel.stepsRemaining.value shouldBe 1
+
+                viewModel.clearCells()
+
+                viewModel.stepsRemaining.value shouldBe 2
             }
         }
         "updateCell" - {
@@ -88,25 +105,85 @@ class MainScreenViewModelTest: FreeSpec() {
                 viewModel.cells.value.get()[0][1] shouldBe false
             }
         }
+        "updateRows" - {
+            "if the value cannot be parsed as an integer rows is set null" {
+                setup()
+                viewModel.initialiseCells(1, 2)
+
+                viewModel.updateRows("fake")
+
+                viewModel.rows.value shouldBe null
+            }
+            "if the value is negative, rows is left unchanged" {
+                setup()
+                viewModel.initialiseCells(1, 2)
+
+                viewModel.updateRows("-3")
+
+                viewModel.rows.value shouldBe 1
+            }
+            "otherwise the number of rows is set to that which was passed" {
+                setup()
+                viewModel.initialiseCells(1, 2)
+
+                viewModel.updateRows("3")
+
+                viewModel.rows.value shouldBe 3
+            }
+        }
+        "updateColumns" - {
+            "if the value cannot be parsed as an integer it does nothing" {
+                setup()
+                viewModel.initialiseCells(1, 2)
+
+                viewModel.updateColumns("fake")
+
+                viewModel.columns.value shouldBe null
+            }
+            "if the value is negative, columns is left unchanged" {
+                setup()
+                viewModel.initialiseCells(1, 2)
+
+                viewModel.updateColumns("-3")
+
+                viewModel.columns.value shouldBe 2
+            }
+            "otherwise the number of columns is set to that which was passed" {
+                setup()
+                viewModel.initialiseCells(1, 2)
+
+                viewModel.updateColumns("3")
+
+                viewModel.columns.value shouldBe 3
+            }
+        }
         "updateStepsRemaining" - {
-            "if the steps passed is negative it does nothing" {
-                setup(initialStepsRemaining = 0)
+            // FIXME - this function really should take a string
+            "if the steps passed cannot be parsed as an integer, stepsRemaining is set to null" {
+                setup(initialStepsRemaining = 1)
 
-                viewModel.updateStepsRemaining(-123)
+                viewModel.updateStepsRemaining("fake")
 
-                viewModel.stepsRemaining.value shouldBe 0
+                viewModel.stepsRemaining.value shouldBe null
+            }
+            "if the steps passed parses to a negative integer then stepsRemaining stays unchanged" {
+                setup(initialStepsRemaining = 1)
+
+                viewModel.updateStepsRemaining("-2")
+
+                viewModel.stepsRemaining.value shouldBe 1
             }
             "otherwise it updates stepsRemaining to the number passed to it" {
-                setup(initialStepsRemaining = 0)
+                setup(initialStepsRemaining = 1)
 
-                viewModel.updateStepsRemaining(123)
+                viewModel.updateStepsRemaining("2")
 
-                viewModel.stepsRemaining.value shouldBe 123
+                viewModel.stepsRemaining.value shouldBe 2
             }
             "the value passed will be used to reset the steps remaining if a game runs to completion" {
                 setup(initialStepsRemaining = 1)
 
-                viewModel.updateStepsRemaining(2)
+                viewModel.updateStepsRemaining("2")
                 viewModel.startGameOfLife()
                 defaultDispatcher.scheduler.advanceUntilIdle()
 
@@ -114,19 +191,26 @@ class MainScreenViewModelTest: FreeSpec() {
             }
         }
         "updateStepDuration" - {
-            "if duration passed in is negative it does nothing" {
-                setup(initialStepDuration = 0)
+            "if the duration passed in does not parse as a long stepDuration is set null" {
+                setup(initialStepDuration = 1)
 
-                viewModel.updateStepDuration(-123)
+                viewModel.updateStepDuration("fake")
 
-                viewModel.stepDurationMs.value shouldBe 0
+                viewModel.stepDurationMs.value shouldBe null
+            }
+            "if duration passed parses to a negative integer it does nothing" {
+                setup(initialStepDuration = 1)
+
+                viewModel.updateStepDuration("-123")
+
+                viewModel.stepDurationMs.value shouldBe 1
             }
             "otherwise it updates the duration between steps to the number passed in" {
-                setup(initialStepDuration = 0)
+                setup(initialStepDuration = 1)
 
-                viewModel.updateStepDuration(123)
+                viewModel.updateStepDuration("2")
 
-                viewModel.stepDurationMs.value shouldBe 123
+                viewModel.stepDurationMs.value shouldBe 2
             }
         }
         "startGameOfLife" - {

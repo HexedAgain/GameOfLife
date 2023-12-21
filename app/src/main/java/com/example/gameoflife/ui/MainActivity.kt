@@ -198,7 +198,7 @@ fun AnimationSpeedRow(mainScreenViewModel: MainScreenViewModel = koinViewModel()
                 .padding(8.dp),
             label = { Text(stringResource(id = R.string.animation_speed), fontSize = 14.sp) },
             value = "${animationSpeed ?: ""}",
-            onValueChange = { }
+            onValueChange = { mainScreenViewModel.updateStepDuration(it) }
         )
     }
 }
@@ -218,7 +218,7 @@ fun NumberOfGenerationsRow(
                 .padding(8.dp),
             label = { Text(stringResource(id = R.string.number_of_generations), fontSize = 14.sp) },
             value = "${noOfGenerations ?: ""}",
-            onValueChange = { }
+            onValueChange = { mainScreenViewModel.updateStepsRemaining(it) }
         )
     }
 }

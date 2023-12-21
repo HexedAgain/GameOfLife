@@ -21,20 +21,26 @@ class MainScreenViewModel(
     private val _cells = MutableStateFlow(Cells.makeGrid(25, 25))
     val cells = _cells.asStateFlow()
 
-    private val _stepDurationMs = MutableStateFlow(stepDuration)
+    private val _stepDurationMs: MutableStateFlow<Long?> = MutableStateFlow(stepDuration)
     val stepDurationMs = _stepDurationMs.asStateFlow()
 
-    fun updateStepDuration(newDuration: Long) {
-        if (newDuration < 0) return
-        _stepDurationMs.value = newDuration
+    fun updateStepDuration(newDuration: String) {
+        val numericStepDuration = kotlin.runCatching { newDuration.toLong() }.getOrNull()
+        if (numericStepDuration != null && numericStepDuration < 0) {
+            return
+        }
+        _stepDurationMs.value = numericStepDuration
     }
 
-    private val _stepsRemaining = MutableStateFlow(stepsRemaining)
+    private val _stepsRemaining: MutableStateFlow<Int?> = MutableStateFlow(stepsRemaining)
     val stepsRemaining = _stepsRemaining.asStateFlow()
-    fun updateStepsRemaining(newStepsRemaining: Int) {
-        if (newStepsRemaining < 0) return
-        _stepsRemaining.value = newStepsRemaining
-        initialStepsRemaining = newStepsRemaining
+    fun updateStepsRemaining(newStepsRemaining: String) {
+        val numericStepsRemaining = kotlin.runCatching { newStepsRemaining.toInt() }.getOrNull()
+        if (numericStepsRemaining != null && numericStepsRemaining < 0) {
+            return
+        }
+        _stepsRemaining.value = numericStepsRemaining
+        initialStepsRemaining = numericStepsRemaining ?: 0
     }
 
     private val _isPlaying = MutableStateFlow(false)
@@ -44,7 +50,7 @@ class MainScreenViewModel(
     val rows = _rows.asStateFlow()
     fun updateRows(newRows: String) {
         val numericNewRows = kotlin.runCatching { newRows.toInt() }.getOrNull()
-        if (numericNewRows != null && numericNewRows > MAX_ROWS) {
+        if (numericNewRows != null && (numericNewRows < 0 || numericNewRows > MAX_ROWS)) {
             return
         }
         _rows.value = numericNewRows
@@ -54,7 +60,7 @@ class MainScreenViewModel(
     val columns = _columns.asStateFlow()
     fun updateColumns(newColumns: String) {
         val numericNewColumns = kotlin.runCatching { newColumns.toInt() }.getOrNull()
-        if (numericNewColumns != null && numericNewColumns > MAX_COLUMNS) {
+        if (numericNewColumns != null && (numericNewColumns < 0 || numericNewColumns > MAX_COLUMNS)) {
             return
         }
         _columns.value = numericNewColumns
@@ -68,6 +74,7 @@ class MainScreenViewModel(
 
     fun clearCells() {
         _cells.value = Cells.makeGrid(_rows.value ?: return, _columns.value ?: return)
+        _stepsRemaining.value = initialStepsRemaining
     }
 
     private var gameJob: Job? = null
@@ -79,10 +86,10 @@ class MainScreenViewModel(
     fun startGameOfLife() {
         _isPlaying.value = true
         gameJob = viewModelScope.launch(defaultDispatcher) {
-            while (stepsRemaining.value > 0 && cells.value.numLive > 0) {
-                delay(stepDurationMs.value)
+            while ((stepsRemaining.value ?: 0) > 0 && cells.value.numLive > 0) {
+                stepDurationMs.value?.let { delay(it) }
                 _cells.value = _cells.value.getNextGeneration()
-                _stepsRemaining.value -= 1
+                _stepsRemaining.value = _stepsRemaining.value?.minus(1)
             }
             this.cancel()
             _isPlaying.value = false
