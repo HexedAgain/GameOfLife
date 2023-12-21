@@ -18,7 +18,7 @@ class MainScreenViewModel(
     stepDuration: Long = 1_000
 ): ViewModel() {
     private var initialStepsRemaining = stepsRemaining
-    private val _cells = MutableStateFlow(Cells.makeGrid(25, 25))
+    private val _cells = MutableStateFlow(Cells.makeGrid(10, 10))
     val cells = _cells.asStateFlow()
 
     private val _stepDurationMs: MutableStateFlow<Long?> = MutableStateFlow(stepDuration)

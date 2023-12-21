@@ -228,6 +228,11 @@ fun Float.toDp(context: Context): Dp {
     return (this / density).dp
 }
 
+fun Dp.toPx(context: Context): Float {
+    val density = (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+    return (this.value * density)
+}
+
 @Composable
 fun CellsGrid(
     mainScreenViewModel: MainScreenViewModel = koinViewModel()
@@ -239,8 +244,8 @@ fun CellsGrid(
     val configuration = LocalConfiguration.current
     val gridWidth = configuration.screenWidthDp.dp - 16.dp
     val gridHeight = configuration.screenHeightDp.dp - 128.dp
-    val width = gridWidth / numRows
-    val height = gridHeight / numCols
+    val width = gridWidth / numCols
+    val height = gridHeight / numRows
     val context = LocalContext.current
     Column(
         // Note: defining clickable on each of the cells seems to be a massive performance hit
