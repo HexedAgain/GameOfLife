@@ -9,7 +9,7 @@ class Cells private constructor(
     var numLive = nLive
         private set
 
-    val totalCells: Int = get().flatten().size
+    val totalCells: Int = grid.size * (grid.firstOrNull()?.size ?: 0)
 
     fun makeCellLive(row: Int, column: Int): Cells {
         return setLiveness(row, column, isAlive = true)
