@@ -232,6 +232,7 @@ fun Float.toDp(context: Context): Dp {
 fun CellsGrid(
     mainScreenViewModel: MainScreenViewModel = koinViewModel()
 ) {
+    // FIXME - this is broken again :(
     val cells by mainScreenViewModel.cells.collectAsState()
     val numRows = cells.get().size
     val numCols = cells.get().firstOrNull()?.size ?: 0
